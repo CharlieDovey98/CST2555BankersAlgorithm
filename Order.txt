@@ -1,0 +1,42 @@
+start program, system starts in a safe state.
+
+Enter the amount of resources for the system: (3) ##
+Enter the amounts of instances accociated to each resource: (10 5 7) ##
+
+Enter the number of processes: (5) ##
+Enter the allocation for process 0: (0 1 0) ##
+Enter the maximum number of instances to be requested from each resource: (7 5 3) ##
+(X.no of processes) ##
+
+work out the initial available resources () 
+
+calculate the need for each process -
+function need(
+(Pn need = max - allocation ) 
+x.no of processes
+
+check whether its possible to allocate to Pn for all P
+
+print the sequence and the safe state or deadlock
+
+prompt the user to make a new request,
+if the system is in safe state grant the request
+if the system is in deadlock deny the request and stop the program.
+
+{
+do I print for safe state/deadlock before every process
+or provide whether it can run in a safe state at all or will deadlock???
+}
+
+
+1. Start the program.
+2. Get the values of resources and processes.
+3. Get the available value.
+4. After allocation find the need value.
+5. Check whether it’s possible to allocate.
+6. If it is possible then the system is in the safe state.
+7. Else system is not in the safety state.
+8. If the new request comes then check that the system is in safe state.
+9. If so, grant the request.
+10. If not, deny the request.
+11. Stop the program.
