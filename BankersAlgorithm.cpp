@@ -22,14 +22,16 @@ void table()
         };
         initialResources[i] += available[i];
     };
-	// Print out the initial resources for the system 
+	// Display the initial resources for the system 
 	cout << "Initial Resources: ";
     for (int j = 0; j < resources; j++)
     {
         cout << initialResources[j] << " ";
     };
 	cout << "\n\n";
+	// Display the titles for each column of the table.
 	cout << "Process   Allocation   maximum   Need\n";
+	// Display the corresponding value from each matrix to display the information to the user.
 	for (int i = 0; i < processes; i++)
 	{
 		cout << "  P" << i << "        ";
@@ -50,6 +52,7 @@ void table()
 
 		cout << "\n\n";
 	};
+	// Display the available resources to the user beneath the table.
 	cout << "Available Resources: ";
 	for (int i = 0; i < resources; ++i)
 	{
@@ -100,12 +103,61 @@ void getInput()
 // A function to attain the safety state of the system.
 bool checkForSafeState()
 {
-	cout << "not Yet Complete\n";
-	numbbb += 1;
-	if (numbbb == 2) {
-	return true;
-	}
-	else return false;
+	// Declaring work and finish as arrays, the same size as their respective needs [i].
+    int work[resources];
+    bool finish[processes] = {false}; // finish[] will be the same length as processes and each index will be boolean false to start.
+
+    // Assigning each index of work to be equal to each index of available.
+    for (int i = 0; i < resources; i++)
+    {
+        work[i] = available[i];
+    }
+	// A while (true) loop to keep the safety algorithm going until instructed to break.
+    while (true)
+    {
+        bool found = false;
+   	 	// Find an index where finish[i] is equal to false, and need[i] is less than or equal to work[i].
+        for (int i = 0; i < processes; i++)
+        {
+            if (!finish[i])
+            {
+                bool possible = true;
+                for (int j = 0; j < resources; j++)
+                {
+                    if (need[i][j] > work[j])
+                    {
+                        possible = false;
+                        break;
+                    }
+                }
+                if (possible)
+                {
+                    // If all need[i] is less than or equal to work[i], add allocation[i] to work[i] and set finish[i] to true.
+                    for (int k = 0; k < resources; k++)
+                    {
+                        work[k] += allocation[i][k];
+                        finish[i] = true;
+                        found = true;
+                    }
+                }
+            }
+        }
+        // If no processes were possible in this pass (found never updated to true), break the while loop
+        if (!found)
+        {
+            break;
+        }
+    }
+
+    // A for loop to check each indexes boolean value within finish.
+    for (int i = 0; i < processes; i++)
+    {
+        if (!finish[i]) // If an index of finish is false then its need surpassed the available resources and it was never able to execute.
+        {
+            return false; // If a finish[i] is equal to false, return false. The system is not in a Safe state.
+        }
+    }
+    return true; // If finish[i] is equal to true for all indexes, then return true. the system is in a Safe state.
 };
 
 // A function to attain a new request from the user.
@@ -129,8 +181,7 @@ void calculateBAOutcome()
 	// Else no new requests will be granted and the system will exit.
 	else
 	{
-		cout << "Your request has been denied as the system would enter a non safe-state.\n"
-			 << "The program will now exit.";
+		cout << "Your request has been denied as the system would enter a non safe-state.\nThe program will now exit.";
 	}
 };
 
