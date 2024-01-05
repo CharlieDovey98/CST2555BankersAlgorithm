@@ -189,7 +189,7 @@ void resourceRequestAlgorithm()
 		allocation[processRequested][i] += requestedResources[i];
 		need[processRequested][i] -= requestedResources[i];
 	}
-	cout << "\nRequest granted.";
+	cout << "\nDetails accepted, here is the updated table: ";
 };
 
 // A function to attain a new request from the user.
