@@ -1,3 +1,5 @@
+Banker's Algorithm, Coded by Charlie Dovey m00843428 for CST2555.
+
 Bankers Algorithm
 The Bankers Algorithm in OS is an algorithm used to manage and allocate resources in a multi-task environment. It is used to prevent deadlocks and ensure the system remains in a safe state. The algorithm works by keeping track of the available resources in the system and allocating them to processes in a way that ensures that the system will not run out of resources and enter a deadlock state. The Banker’s Algorithm in OS uses a combination of resource allocation and deadlock detection to ensure efficient resource usage and prevent system failures.
 
