@@ -67,9 +67,21 @@ void getInput()
 {
 	cout << "Enter the amount of resources for the system (max 5): ";
 	cin >> resources;
+	while (resources <= 0 || resources > 5)
+	{
+		cout << "Invalid resource number <<(1 to 5)>>\n";
+		cout << "Enter the amount of resources for the system (max 5): ";
+		cin >> resources;
+	}
 
 	cout << "Enter the amount of processes for the system (max 5): ";
 	cin >> processes;
+	while (processes <= 0 || processes > 5)
+	{
+		cout << "Invalid process number <<(1 to 5)>>\n";
+		cout << "Enter the amount of resources for the system (max 5): ";
+		cin >> processes;
+	}
 
 	for (int i = 0; i < processes; i++)
 	{
@@ -84,6 +96,12 @@ void getInput()
 		{
 			cout << "Enter the maximum for resource " << k << ": ";
 			cin >> maximum[i][k];
+			while (maximum[i][k] < allocation[i][k])
+			{
+				cout << "Invalid maximum for resource <<(This needs to be greater than or equal to the processes allocation)>>\n";
+				cout << "Enter the maximum for resource " << k << ": ";
+				cin >> maximum[i][k];
+			}
 		};
 		for (int j = 0; j < resources; j++)
 		{
@@ -165,20 +183,16 @@ bool checkForSafeState()
 // This function will determine inf the resource request can be granted and if so will update the needed matrixes.
 void resourceRequestAlgorithm()
 {
-	bool needCheck = true, availableCheck = true;
+	bool check = true;
 	for (int i = 0; i < resources; i++)
 	{
-		if (requestedResources[i] > need[processRequested][i])
+		if (requestedResources[i] > need[processRequested][i] || requestedResources[i] > available[i])
 		{
-			needCheck = false;
-		}
-		if (requestedResources[i] > available[i])
-		{
-			availableCheck = false;
+			check = false;
 		}
 	}
 
-	if (availableCheck == true && needCheck == true)
+	if (check)
 	{
 		for (int i = 0; i < resources; i++)
 		{
@@ -199,24 +213,26 @@ void newRequest()
 {
 	cout << "\nPlease enter the process you wish to make a request on (0 to " << processes - 1 << "): ";
 	cin >> processRequested;
-	if (processRequested < 0 || processRequested >= processes)
+	while (processRequested < 0 || processRequested >= processes)
 	{
+		cout << "\nPlease enter the process you wish to make a request on (0 to " << processes - 1 << "): ";
 		cout << "Invalid process number <<(0 to " << processes - 1 << ")>>\n";
-		return;
+		cin >> processRequested;
 	}
-
 	cout << "Please enter the new request figures for Process " << processRequested << ".\n";
+
 	for (int i = 0; i < resources; i++)
 	{
 		cout << "Resource allocation " << i << ": ";
 		cin >> requestedResources[i];
-		if (requestedResources[i] < 0 || requestedResources[i] > need[processRequested][i])
+		while (requestedResources[i] < 0 || requestedResources[i] > need[processRequested][i])
 		{
-			cout << "Invalid request amount. It cannot be more than the need or a negative value.\n";
-			return;
+			cout << "Invalid request amount. It cannot be more than the need of the chosen process, or a negative value.\n";
+			cout << "Resource allocation " << i << ": ";
+			cin >> requestedResources[i];
 		}
 	}
-
+	// If the new request meets the above criteria, call the resource request algorithm function to handle the request.
 	resourceRequestAlgorithm();
 };
 
@@ -250,8 +266,7 @@ void calculateBAOutcome()
 		if (checkForSafeState())
 		{
 			showSafeSequence();
-		cout << "\nThe program will now exit.";
-
+			cout << "\nThe program will now exit.";
 		}
 		else
 		{
