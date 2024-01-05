@@ -1,5 +1,5 @@
-#include <iostream>
-using namespace std;
+#include <iostream>	 // Allows for input/output stream library within the code.
+using namespace std; // Allows me to avoid prefixing std:: in the code.
 
 int allocation[5][5], maximum[5][5], need[5][5], available[5], initialResources[5], requestedResources[5], safeSequence[5];
 int processes, resources, processRequested;
@@ -67,7 +67,7 @@ void getInput()
 {
 	cout << "Enter the amount of resources for the system (max 5): ";
 	cin >> resources;
-	while (resources <= 0 || resources > 5)
+	while (resources <= 0 || resources > 5) // Validation on the user input.
 	{
 		cout << "Invalid resource number <<(1 to 5)>>\n";
 		cout << "Enter the amount of resources for the system (max 5): ";
@@ -76,7 +76,7 @@ void getInput()
 
 	cout << "Enter the amount of processes for the system (max 5): ";
 	cin >> processes;
-	while (processes <= 0 || processes > 5)
+	while (processes <= 0 || processes > 5) // Validation on the user input.
 	{
 		cout << "Invalid process number <<(1 to 5)>>\n";
 		cout << "Enter the amount of resources for the system (max 5): ";
@@ -96,7 +96,7 @@ void getInput()
 		{
 			cout << "Enter the maximum for resource " << k << ": ";
 			cin >> maximum[i][k];
-			while (maximum[i][k] < allocation[i][k])
+			while (maximum[i][k] < allocation[i][k]) // Validation on the user input.
 			{
 				cout << "Invalid maximum for resource <<(This needs to be greater than or equal to the processes allocation)>>\n";
 				cout << "Enter the maximum for resource " << k << ": ";
@@ -180,43 +180,28 @@ bool checkForSafeState()
 };
 
 // A function to hold the resource request algorithm.
-// This function will determine inf the resource request can be granted and if so will update the needed matrixes.
+// This function will update the needed matrixes.
 void resourceRequestAlgorithm()
 {
-	bool check = true;
 	for (int i = 0; i < resources; i++)
 	{
-		if (requestedResources[i] > need[processRequested][i] || requestedResources[i] > available[i])
-		{
-			check = false;
-		}
+		available[i] -= requestedResources[i];
+		allocation[processRequested][i] += requestedResources[i];
+		need[processRequested][i] -= requestedResources[i];
 	}
-
-	if (check)
-	{
-		for (int i = 0; i < resources; i++)
-		{
-			available[i] -= requestedResources[i];
-			allocation[processRequested][i] += requestedResources[i];
-			need[processRequested][i] -= requestedResources[i];
-		}
-		cout << "\nRequest granted.";
-	}
-	else
-	{
-		cout << "\nRequest cannot be granted.\nPlease ensure your request is less than or equal to the need of that process\nand less than or equal to the available resources.";
-	}
+	cout << "\nRequest granted.";
 };
 
 // A function to attain a new request from the user.
+// This function will determine if the resource request can be granted, if so it will call the resource request algorithm.
 void newRequest()
 {
 	cout << "\nPlease enter the process you wish to make a request on (0 to " << processes - 1 << "): ";
 	cin >> processRequested;
-	while (processRequested < 0 || processRequested >= processes)
+	while (processRequested < 0 || processRequested >= processes) // Validation on the user input.
 	{
-		cout << "\nPlease enter the process you wish to make a request on (0 to " << processes - 1 << "): ";
 		cout << "Invalid process number <<(0 to " << processes - 1 << ")>>\n";
+		cout << "Please enter the process you wish to make a request on (0 to " << processes - 1 << "): ";
 		cin >> processRequested;
 	}
 	cout << "Please enter the new request figures for Process " << processRequested << ".\n";
@@ -225,9 +210,10 @@ void newRequest()
 	{
 		cout << "Resource allocation " << i << ": ";
 		cin >> requestedResources[i];
-		while (requestedResources[i] < 0 || requestedResources[i] > need[processRequested][i])
+		// If the the user resource request input is greater than the need or greater than the available resources the request will not be granted.
+		while (requestedResources[i] < 0 || requestedResources[i] > need[processRequested][i] || requestedResources[i] > available[i])
 		{
-			cout << "Invalid request amount. It cannot be more than the need of the chosen process, or a negative value.\n";
+			cout << "Invalid request amount. It cannot be more than the need of the chosen process, more than the available resources, or a negative value.\n";
 			cout << "Resource allocation " << i << ": ";
 			cin >> requestedResources[i];
 		}
