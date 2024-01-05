@@ -104,7 +104,7 @@ bool checkForSafeState()
 	// Declaring work and finish as arrays, the same size as their respective needs [i].
 	int work[resources];
 	bool finish[processes] = {false}; // finish[] will be the same length as processes and each index will be boolean false to start.
-	int l = 0;
+	int n = 0;
 
 	// Assigning each index of work to be equal to each index of available.
 	for (int i = 0; i < resources; i++)
@@ -138,12 +138,12 @@ bool checkForSafeState()
 					}
 					finish[i] = true;
 					found = true;
-					safeSequence[l] = i;
-					l++;
+					safeSequence[n] = i;
+					n++;
 				}
 			}
 		}
-		// If no processes were possible in this pass (found never updated to true), break the while loop
+		// If no processes were possible in this pass (found never updated to true), break the while loop.
 		if (!found)
 		{
 			break;
@@ -255,13 +255,13 @@ void calculateBAOutcome()
 		}
 		else
 		{
-			cout << "Your request has been denied as the system would enter a non safe-state.\ntThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
+			cout << "Your request has been denied as the system would enter a non safe-state.\nThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
 		}
 	}
 	// Else no new requests will be granted and the system will exit.
 	else
 	{
-		cout << "Your request has been denied as the system would enter a non safe-state.\ntThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
+		cout << "Your request has been denied as the system would enter a non safe-state.\nThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
 	};
 };
 
@@ -272,4 +272,4 @@ int main()
 	getInput();
 	table();
 	calculateBAOutcome();
-}
+};
