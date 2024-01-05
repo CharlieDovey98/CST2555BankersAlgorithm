@@ -179,17 +179,78 @@ bool checkForSafeState()
 	return true; // If finish[i] is equal to true for all indexes, then return true. the system is in a Safe state.
 };
 
+// This function attains and prints the safe sequence for the user.
+void showSafeSequence()
+{
+	cout << "Your request has been granted, the system is in a safe state.\nThe safe sequence found is: ";
+	for (int i = 0; i < processes; i++)
+	{
+		cout << "P" << safeSequence[i];
+		if (i < processes - 1)
+		{
+			cout << " --> ";
+		}
+		else
+		{
+			cout << ".";
+		};
+	};
+};
+
 // A function to hold the resource request algorithm.
-// This function will update the needed matrixes.
+// This function will update the needed matrices if the request can be granted safely.
 void resourceRequestAlgorithm()
 {
+	// Initialising some temporary arrays to save the state of the Bankers Algorithm.
+	int temporaryAvailable[5], temporaryAllocation[5][5], temporaryNeed[5][5];
+
+	// Saving the curent state of the available, allocation and need matrices.
+	for (int i = 0; i < resources; i++)
+	{
+		temporaryAvailable[i] = available[i];
+	}
+	for (int i = 0; i < processes; i++)
+	{
+		for (int j = 0; j < resources; j++)
+		{
+			temporaryAllocation[i][j] = allocation[i][j];
+			temporaryNeed[i][j] = need[i][j];
+		}
+	}
+
+	// Make the necessary changes to the system to then check for a safe state.
 	for (int i = 0; i < resources; i++)
 	{
 		available[i] -= requestedResources[i];
 		allocation[processRequested][i] += requestedResources[i];
 		need[processRequested][i] -= requestedResources[i];
 	}
-	cout << "\nDetails accepted, here is the updated table: ";
+
+	// Check if the new state is the system is safe.
+	if (checkForSafeState())
+	{
+		table();
+		showSafeSequence();
+		cout << "\nThe program will now exit.";
+	}
+	else
+	{
+		cout << "\nYour request has been denied as the system would enter an unsafe state.\nThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
+
+		// Revert to the saved state because the request leads to an unsafe state
+		for (int i = 0; i < resources; i++)
+		{
+			available[i] = temporaryAvailable[i];
+		}
+		for (int i = 0; i < processes; i++)
+		{
+			for (int j = 0; j < resources; j++)
+			{
+				allocation[i][j] = temporaryAllocation[i][j];
+				need[i][j] = temporaryNeed[i][j];
+			}
+		}
+	};
 };
 
 // A function to attain a new request from the user.
@@ -222,24 +283,6 @@ void newRequest()
 	resourceRequestAlgorithm();
 };
 
-// This function attains and prints the safe sequence for the user.
-void showSafeSequence()
-{
-	cout << "Your request has been granted, the system is in a safe state.\nThe safe sequence found is: ";
-	for (int i = 0; i < processes; i++)
-	{
-		cout << "P" << safeSequence[i];
-		if (i < processes - 1)
-		{
-			cout << " --> ";
-		}
-		else
-		{
-			cout << ".";
-		};
-	};
-};
-
 // A function to attain and present the outcome of the bankers algorithm for the user.
 void calculateBAOutcome()
 {
@@ -248,16 +291,6 @@ void calculateBAOutcome()
 	{
 		showSafeSequence();
 		newRequest();
-		table();
-		if (checkForSafeState())
-		{
-			showSafeSequence();
-			cout << "\nThe program will now exit.";
-		}
-		else
-		{
-			cout << "Your request has been denied as the system would enter a non safe-state.\nThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
-		}
 	}
 	// Else no new requests will be granted and the system will exit.
 	else
