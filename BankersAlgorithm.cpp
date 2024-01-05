@@ -220,32 +220,49 @@ void newRequest()
 	resourceRequestAlgorithm();
 };
 
+// This function attains and prints the safe sequence for the user.
+void showSafeSequence()
+{
+	cout << "Your request has been granted, the system is in a safe state.\nThe safe sequence found is: ";
+	for (int i = 0; i < processes; i++)
+	{
+		cout << "P" << safeSequence[i];
+		if (i < processes - 1)
+		{
+			cout << " --> ";
+		}
+		else
+		{
+			cout << ".";
+		};
+	};
+};
+
 // A function to attain and present the outcome of the bankers algorithm for the user.
 void calculateBAOutcome()
 {
 	// If the system is in a safe state, inform the user and allow for a new request.
 	if (checkForSafeState())
 	{
-		cout << "Your request has been granted, the system is in a safe state.\nThe safe sequence found is ";
-		for (int i = 0; i < processes; i++)
-		{
-			cout << "P" << safeSequence[i];
-			if (i < processes - 1)
-			{
-				cout << " --> ";
-			}
-			else {
-				cout << ".";
-			};
-		}
+		showSafeSequence();
 		newRequest();
 		table();
+		if (checkForSafeState())
+		{
+			showSafeSequence();
+		cout << "\nThe program will now exit.";
+
+		}
+		else
+		{
+			cout << "Your request has been denied as the system would enter a non safe-state.\ntThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
+		}
 	}
 	// Else no new requests will be granted and the system will exit.
 	else
 	{
-		cout << "Your request has been denied as the system would enter a non safe-state.\nThe program will now exit.";
-	}
+		cout << "Your request has been denied as the system would enter a non safe-state.\ntThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
+	};
 };
 
 // The main function for the code. Calling functions within the file.
