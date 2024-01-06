@@ -83,20 +83,26 @@ void getInput()
 		cin >> processes;
 	}
 
-	for (int i = 0; i < processes; i++)
+	for (int i = 0; i < processes; i++) // For each of the processes, attain the data for each resource.
 	{
 		cout << "\nFor process " << i << " please confirm its details.\n";
 
-		for (int j = 0; j < resources; j++)
+		for (int j = 0; j < resources; j++) // Attain the allocation data.
 		{
 			cout << "Enter the allocation for resource " << j << ": ";
 			cin >> allocation[i][j];
+			while (allocation[i][j] < 0) // Validation on the user input.
+			{
+				cout << "Invalid allocation for resource <<(This needs to be greater than or equal to 0)>>\n";
+				cout << "Enter the allocation for resource " << j << ": ";
+				cin >> allocation[i][j];
+			}
 		};
-		for (int k = 0; k < resources; k++)
+		for (int k = 0; k < resources; k++) // Attain the maximum request data.
 		{
 			cout << "Enter the maximum for resource " << k << ": ";
 			cin >> maximum[i][k];
-			while (maximum[i][k] < allocation[i][k]) // Validation on the user input.
+			while (maximum[i][k] < allocation[i][k] || maximum[i][k] < 0) // Validation on the user input.
 			{
 				cout << "Invalid maximum for resource <<(This needs to be greater than or equal to the processes allocation)>>\n";
 				cout << "Enter the maximum for resource " << k << ": ";
@@ -105,7 +111,7 @@ void getInput()
 		};
 		for (int j = 0; j < resources; j++)
 		{
-			need[i][j] = maximum[i][j] - allocation[i][j];
+			need[i][j] = maximum[i][j] - allocation[i][j]; // Calculate the need matrix via: need = maximum - allocation for each [i][i].
 		};
 	};
 	cout << "\nPlease enter the amount of available resources the system has.\n";
@@ -238,14 +244,14 @@ void resourceRequestAlgorithm()
 		need[processRequested][i] -= requestedResources[i];
 	}
 
-	// Check if the new state is the system is safe.
-	if (checkForSafeState())
+	// Check if the new state of the system is safe.
+	if (checkForSafeState()) // If the system is in a safe state present the table, the safe sequence found and an end message.
 	{
 		table();
 		showSafeSequence();
 		cout << "\nThe program will now exit.";
 	}
-	else
+	else // else if the system is in an unsafe state revert the data and print an error message.
 	{
 		cout << "\nYour request has been denied as the system would enter an unsafe state.\nThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
 
