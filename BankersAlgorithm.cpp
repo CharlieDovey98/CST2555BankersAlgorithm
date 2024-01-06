@@ -204,6 +204,18 @@ void resourceRequestAlgorithm()
 	// Initialising some temporary arrays to save the state of the Bankers Algorithm.
 	int temporaryAvailable[5], temporaryAllocation[5][5], temporaryNeed[5][5];
 
+	// If the the user resource request input is greater than the need or greater than the available resources the request will not be granted.
+	for (int i = 0; i < resources; i++)
+	{
+
+		if (requestedResources[i] > need[processRequested][i] || requestedResources[i] > available[i])
+		{
+			cout << "Invalid request amount. It cannot be more than the need of the chosen process, more than the available resources, or a negative value.\n";
+			cout << "\nYour request has been denied as the system would enter an unsafe state.\nThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
+			return;
+		}
+	}
+
 	// Saving the curent state of the available, allocation and need matrices.
 	for (int i = 0; i < resources; i++)
 	{
@@ -237,7 +249,7 @@ void resourceRequestAlgorithm()
 	{
 		cout << "\nYour request has been denied as the system would enter an unsafe state.\nThe execution of these processes may result in deadlocks or resource starvation.\nThe program will now exit.";
 
-		// Revert to the saved state because the request leads to an unsafe state
+		// Revert to the saved safe state, before the new request, because the request leads to an unsafe system state.
 		for (int i = 0; i < resources; i++)
 		{
 			available[i] = temporaryAvailable[i];
@@ -271,15 +283,8 @@ void newRequest()
 	{
 		cout << "Resource allocation " << i << ": ";
 		cin >> requestedResources[i];
-		// If the the user resource request input is greater than the need or greater than the available resources the request will not be granted.
-		while (requestedResources[i] < 0 || requestedResources[i] > need[processRequested][i] || requestedResources[i] > available[i])
-		{
-			cout << "Invalid request amount. It cannot be more than the need of the chosen process, more than the available resources, or a negative value.\n";
-			cout << "Resource allocation " << i << ": ";
-			cin >> requestedResources[i];
-		}
 	}
-	// If the new request meets the above criteria, call the resource request algorithm function to handle the request.
+	// The user entered information will then be passed on to the resource request algorithm below.
 	resourceRequestAlgorithm();
 };
 
